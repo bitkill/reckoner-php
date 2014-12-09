@@ -8,6 +8,8 @@ this is an attempt of making a faster, identical php "slim" router
 you can also set custom http methods thru some php magic!
 
 example:
+
+
     $app->get('/hi', function() {
         echo 'hello world';
     });
