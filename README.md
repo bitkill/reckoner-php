@@ -9,18 +9,19 @@ you can also set custom http methods thru some php magic!
 
 example:
 
-	// parameter support
+	<?php
+	// parameter(s) support
 	$app->get('/hello/:name', function($name) {
 	    echo 'hello ' . $name;
 	});
 
-	// faster parameter support
-	$app->get_p('/hello/for/:p', function($name) {
-	    echo 'hello ' . $name;
+	// fast parameter(s) support
+	$app->get_p('/hello/for/:p(/:p)', function($name, $surname ="") {
+	    echo 'hello ' . $name . ' ' . $surname;
 	});
     
 	// custom MYOPTIONS method
-	$app->myoptions('/api', function() {});
+	$app->myoptions('/api/:var', function($var) {});
 
 	// groups
 	$app->group('/group', function() use ($app) {
