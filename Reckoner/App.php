@@ -5,12 +5,13 @@
 
 namespace Reckoner;
 
-set_exception_handler('\Reckoner\App::exception'); // bootstrap
+\set_exception_handler('\Reckoner\App::exception'); // bootstrap
 
 class App {
     protected $_server = [];
     private $base_dir = "";
     private $group_dir = "";
+    private $exception_file = "exception.php";
 
     public function __construct(Array $options = []) {
         $this->_server = &$_SERVER;
@@ -24,6 +25,13 @@ class App {
         return
             (!empty($this->_server['HTTPS']) && $this->_server['HTTPS'] !== 'off')
             || $this->_server['SERVER_PORT'] == 443;
+    }
+    
+    public function is_ajax() {
+        if(!empty($this->_server['HTTP_X_REQUESTED_WITH']) && strtolower($this->_server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            return TRUE;
+        }
+        return false;
     }
 
     public function get($pattern, $callback) {
@@ -115,7 +123,7 @@ class App {
 
     protected function _exec(&$callback, &$args) {
         foreach ((array)$callback as $cb) { call_user_func_array($cb, $args); }        
-        exit;
+        throw new Halt();
     }
 
     // Stop execution on exception and log as E_USER_WARNING
@@ -123,7 +131,7 @@ class App {
         if ($e instanceof Halt) { return; }
         trigger_error($e->getMessage()."\n".$e->getTraceAsString(), E_USER_WARNING);
         $app = new App();
-        $app->display('exception.php', 500);
+        $app->display($this->exception_file, 500);
     }
 
     public function quote($str) {
@@ -141,11 +149,6 @@ class App {
             header('HTTP/1.1 '.$status);
         }
         include($template);
-    }
-
-    public function __get($name) {
-        if (isset($_REQUEST[$name])) return $_REQUEST[$name];
-        return '';
     }
 }
 

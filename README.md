@@ -1,7 +1,7 @@
 reckoner-php
 ============
 
-a light php rest micro framework,
+a light php rest micro router class,
 now with groups!
 
 this is an attempt of making a faster, identical php "slim" router
