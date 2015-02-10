@@ -1,6 +1,6 @@
 <?php
 /* Reckoner, a High Performance, no-overhead HTTP router
- * by Rui Fernandes
+ * by Rui Fernandes <ruifernandes@crossinganswers.com>
  */
 
 namespace Reckoner;
@@ -17,6 +17,11 @@ class App {
         $this->_server = &$_SERVER;
         if (isset($options['base_dir'])) {
             $this->base_dir = $options['base_dir'];
+        }
+        if (isset($options['name'])) {
+            cli_set_process_title($options['name']);
+        } else {
+            cli_set_process_title('Reckoner Router');
         }
         $this->group_dir = $this->base_dir;
     }
@@ -127,7 +132,7 @@ class App {
     }
 
     // Stop execution on exception and log as E_USER_WARNING
-    public static function exception($e) {
+    public function exception($e) {
         if ($e instanceof Halt) { return; }
         trigger_error($e->getMessage()."\n".$e->getTraceAsString(), E_USER_WARNING);
         $app = new App();
